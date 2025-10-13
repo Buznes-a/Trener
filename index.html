@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PROФит - Персональные тренировки</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: Arial, sans-serif; 
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 2rem;
+        }
+        
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80');
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            padding: 0 2rem;
+        }
+        
+        .hero-content h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 1rem 2rem;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 2rem;
+            font-weight: bold;
+        }
+        
+        section {
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .service-card {
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="nav-container">
+            <div class="logo">PROФит</div>
+            <div class="nav-links">
+                <a href="#about">Обо мне</a>
+                <a href="#services">Услуги</a>
+                <a href="#contact">Контакты</a>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Достигни своей идеальной формы</h1>
+            <p>Персональные тренировки с профессиональным тренером</p>
+            <a href="#contact" class="cta-button">Записаться на тренировку</a>
+        </div>
+    </section>
+
+    <section id="about">
+        <h2>Обо мне</h2>
+        <p>Профессиональный тренер с 5-летним опытом. Специализация: силовые тренировки, коррекция веса, функциональный тренинг. Помогу достичь ваших спортивных целей безопасно и эффективно.</p>
+    </section>
+
+    <section id="services">
+        <h2>Услуги и цены</h2>
+        <div class="services-grid">
+            <div class="service-card">
+                <h3>Персональная тренировка</h3>
+                <p>Индивидуальный подход</p>
+                <p><strong>1500 руб./занятие</strong></p>
+            </div>
+            <div class="service-card">
+                <h3>Программа тренировок</h3>
+                <p>Персональный план на месяц</p>
+                <p><strong>3000 руб.</strong></p>
+            </div>
+            <div class="service-card">
+                <h3>Онлайн-консультация</h3>
+                <p>Разбор техники и питания</p>
+                <p><strong>1000 руб.</strong></p>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact">
+        <h2>Контакты</h2>
+        <p>📞 Телефон: +7 (999) 123-45-67</p>
+        <p>📧 Email: trainer@example.com</p>
+        <p>📍 Адрес: г. Москва, ул. Спортивная, 15</p>
+    </section>
+
+    <footer>
+        <p>PROФит - Персональные тренировки © 2024</p>
+    </footer>
+</body>
+</html>

